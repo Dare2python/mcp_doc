@@ -1,0 +1,43 @@
+classes:
+- system.nova.compute.cluster
+- system.nova.compute.notification.messagingv2
+- system.ceilometer.agent.telemetry.cluster
+- system.ceilometer.agent.polling.default
+- system.nova.compute.libvirt.ssl
+- system.prometheus.exporters.libvirt
+- system.neutron.compute.cluster
+- system.nova.compute.storage.ceph
+- system.ceph.common.cluster
+- cluster.mcpdoc.ceph.common
+- system.linux.network.dynamic_hosts
+- cluster.mcpdoc.infra
+- cluster.mcpdoc.openstack.networking.compute
+parameters:
+  _param:
+    cluster_vip_address: ${_param:openstack_control_address}
+    cluster_local_address: ${_param:single_address}
+    cluster_node01_hostname: ${_param:openstack_control_node01_hostname}
+    cluster_node01_address: ${_param:openstack_control_node01_address}
+    cluster_node02_hostname: ${_param:openstack_control_node02_hostname}
+    cluster_node02_address: ${_param:openstack_control_node02_address}
+    cluster_node03_hostname: ${_param:openstack_control_node03_hostname}
+    cluster_node03_address: ${_param:openstack_control_node03_address}
+    nova_vncproxy_url: https://${_param:cluster_public_host}:6080
+    galera_ssl_enabled: true
+    openstack_mysql_x509_enabled: True
+    rabbitmq_ssl_enabled: True
+    openstack_rabbitmq_port: 5671
+    openstack_rabbitmq_x509_enabled: True
+    openstack_rabbitmq_port: 5671
+    primary_first_nic: ens4
+    primary_second_nic: ens5
+    ceilometer_agent_ssl_enabled: True
+    cluster_internal_protocol: https
+  nova:
+    compute:
+      reserved_host_memory_mb: 1100
+## Best practice configure high speed interface for live migrations
+#  nova:
+#    libvirt:
+#      migration_inbound_addr: ${_param:single_address}
+

@@ -1,0 +1,15 @@
+classes:
+- system.linux.system.repo.mcp.apt_mirantis.contrail
+#- system.linux.system.repo.mcp.apt_mirantis.update.contrail
+#- system.linux.system.repo.mcp.apt_mirantis.hotfix.contrail
+- system.opencontrail.client.cluster
+- system.opencontrail.client.resource.virtual_router
+- system.opencontrail.compute.cluster4_0
+- cluster.mcpdoc.opencontrail.networking.compute
+parameters:
+  _param:
+    opencontrail_compute_address: ${_param:tenant_address}
+  nova:
+    compute:
+      networking: contrail
+# Handle oc + ocata deployment for testing purposes

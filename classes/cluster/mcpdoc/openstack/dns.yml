@@ -1,0 +1,4 @@
+classes:
+- system.powerdns.server.cluster
+- cluster.mcpdoc.infra
+- cluster.mcpdoc.openstack.networking.virtual

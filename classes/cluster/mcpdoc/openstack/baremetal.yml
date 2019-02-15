@@ -1,0 +1,59 @@
+classes:
+- system.ironic.api.cluster
+- system.ironic.conductor.cluster
+- system.ironic.tftpd_hpa
+- system.nova.compute_ironic.cluster
+- system.apache.server.single
+- system.apache.server.site.ironic
+- system.keepalived.cluster.instance.openstack_baremetal_vip
+- system.haproxy.proxy.listen.openstack.ironic_deploy
+- system.haproxy.proxy.single
+- system.salt.minion.cert.openstack_api
+- system.apache.server.proxy
+- system.apache.server.proxy.openstack.ironic
+- system.ironic.conductor.storage.cinder
+- cluster.mcpdoc.infra
+- cluster.mcpdoc.openstack.networking.virtual
+parameters:
+  _param:
+    apache_proxy_openstack_api_address: ${_param:cluster_baremetal_local_address}
+    apache_proxy_openstack_api_host: ${_param:cluster_baremetal_local_address}
+    ironic_conductor_api_url_protocol: https
+    openstack_api_cert_alternative_names: IP:127.0.0.1,IP:${_param:cluster_baremetal_local_address},IP:${_param:cluster_baremetal_vip_address},DNS:${linux:system:name},DNS:${linux:network:fqdn},DNS:${_param:cluster_baremetal_local_address},DNS:${_param:cluster_baremetal_vip_address}
+    apache_ssl:
+      enabled: true
+      authority: "${_param:salt_minion_ca_authority}"
+      key_file: ${_param:openstack_api_cert_key_file}
+      cert_file: ${_param:openstack_api_cert_cert_file}
+      chain_file: ${_param:openstack_api_cert_all_file}
+    apache_proxy_openstack_ironic_host: 127.0.0.1
+    haproxy_https_check_options:
+    - httpchk GET /
+    - httpclose
+    - tcplog
+    haproxy_ironic_deploy_check_params: check inter 10s fastinter 2s downinter 3s rise 3 fall 3 check-ssl verify none
+    ironic_api_type: 'deploy'
+    cluster_vip_address: ${_param:openstack_control_address}
+    ironic_service_host: ${_param:cluster_vip_address}
+    cluster_local_address: ${_param:single_address}
+    cluster_baremetal_vip_address: ${_param:openstack_baremetal_address_baremetal}
+    cluster_baremetal_local_address: ${_param:baremetal_address}
+    keepalived_openstack_baremetal_vip_interface: ens7
+    cluster_node01_hostname: ${_param:openstack_baremetal_node01_hostname}
+    cluster_node01_address: ${_param:openstack_baremetal_node01_address}
+    cluster_node02_hostname: ${_param:openstack_baremetal_node02_hostname}
+    cluster_node02_address: ${_param:openstack_baremetal_node02_address}
+    cluster_node03_hostname: ${_param:openstack_baremetal_node03_hostname}
+    cluster_node03_address: ${_param:openstack_baremetal_node03_address}
+    keepalived_openstack_baremetal_password: ${_param:keepalived_openstack_baremetal_password_generated}
+  haproxy:
+    proxy:
+      listen:
+        ironic_deploy:
+          type: None
+          mode: tcp
+          options: ${_param:haproxy_https_check_options}
+  ironic:
+    api:
+      bind:
+        address: 127.0.0.1

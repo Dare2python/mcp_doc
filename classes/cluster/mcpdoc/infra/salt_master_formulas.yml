@@ -1,0 +1,3 @@
+classes:
+- system.salt.master.pkg
+- system.salt.master.formula.pkg.dogtag
